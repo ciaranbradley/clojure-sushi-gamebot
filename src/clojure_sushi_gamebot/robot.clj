@@ -3,7 +3,7 @@
 ;;; (I typed it out to understand it better)
 ;;; https://github.com/calebmpeterson/awtbot
 ;;;
-(ns cojure-sushi-gamebot.robot
+(ns clojure-sushi-gamebot.robot
   (:import [java.awt Robot]
            [java.awt.event KeyEvent InputEvent]))
 
