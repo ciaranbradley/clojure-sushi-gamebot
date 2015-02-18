@@ -1,11 +1,12 @@
 (ns clojure-sushi-gamebot.core
   (:require [clojure-sushi-gamebot.robot :as r])
+  (:import [javax.imageio.ImageIO])
   (:gen-class))
 
 
 (def screen {:width 640 :height 480})
-(def screen-offset {:x 158 :y 315})
-;;(def screen-offset {:x 9 :y 80})
+;;(def screen-offset {:x 158 :y 315})
+(def screen-offset {:x 10 :y 86})
 
 (def bot (r/create-robot))
 
@@ -46,7 +47,7 @@
                :gunkan [:rice :nori :roe :roe]})
 
 ;;
-;; Co-ordinate map of all the clickables 
+;; Co-ordinate map of all the clickables
 ;;
 (def co-ords {:food {:shrimp  {:x 41 :y 335}
                      :rice    {:x 98 :y 337}
@@ -54,7 +55,7 @@
                      :roe     {:x 96 :y 400}
                      :salmon  {:x 36 :y 448}
                      :unagi   {:x 95 :y 445}}
-              :phone {:x 654 :y 385}
+              :phone {:x 570 :y 390}
               :mat   {:x 133 :y 406}
               :menu {:toppings {:x 540 :y 271}
                      :rice     {:x 540 :y 292}
@@ -82,7 +83,7 @@
            (r/mouse-move position)
            (r/click r/left-button)
            (r/pause 500))) click-sequence))
-    
+
 ;;
 ;; When viewing a co-ordinate, apply the offset
 ;;
@@ -94,7 +95,7 @@
 
 ;;
 ;; Looks in a nested map for co-ords
-;; 
+;;
 (defn get-coord
   ([map key]
    (get map key))
@@ -126,19 +127,48 @@
     (remote-control (conj co-ords (screen-pos :mat)))))
 
 
+(defn build-order
+  "Takes a possibly embedded vector to build a vector of pointmaps"
+  [keywordvect]
+  (into [] (map (fn [option]
+                  (if (vector? option)
+                    (offset (get (get co-ords (first option)) (last option)))
+                    (offset (get co-ords option))))
+                keywordvect)))
+
+
 (defn order
   [food]
-  [:phone [:menu :toppings] [:toppings :rice] [:delivery :norm]])
+  (if (= food :rice)
+    (remote-control
+     (build-order [:phone
+                   [:menu :rice]
+                   [:buy :rice]
+                   [:delivery :norm]]))
+    (remote-control
+     (build-order [:phone
+                   [:menu :toppings]
+                   [:toppings food]
+                   [:delivery :norm]]))))
 
 (defn check-store
   "Checks if stores are running low, orders food if they are"
   [])
 
 (defn start-game
-  []  
+  []
   (remote-control (into [] (map #(offset %) start-seq))))
 
-  
+(defn screen-capture
+  []
+  (let [image (r/screen-capture bot
+                                (:x screen-offset)
+                                (:y screen-offset)
+                                640
+                                480)
+        file (clojure.java.io/file 'test.png')]
+    (javax.imageio.ImageIO/write image 'PNG' file)))
+
 (defn get-mouse
   []
   (let [point (.. java.awt.MouseInfo getPointerInfo getLocation)]

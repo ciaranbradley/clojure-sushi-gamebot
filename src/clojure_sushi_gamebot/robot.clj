@@ -5,11 +5,23 @@
 ;;;
 (ns clojure-sushi-gamebot.robot
   (:import [java.awt Robot]
+           [java.awt Rectangle]
            [java.awt.event KeyEvent InputEvent]))
 
 (defn create-robot
   ([] (Robot.))
   ([screen] (Robot. screen)))
+
+;;
+;; Screen Capture
+;;
+(defn screen-capture [robot height width x y]
+  (let [rect (Rectangle. height width x y)]
+    (.createScreenCapture robot rect)))
+
+;;
+;; Inputs
+;;
 
 (defn key-press [robot key-code]
   (.keyPress robot key-code))
