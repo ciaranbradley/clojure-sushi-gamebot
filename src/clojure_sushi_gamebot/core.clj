@@ -3,10 +3,9 @@
   (:import [javax.imageio.ImageIO])
   (:gen-class))
 
-
 (def screen {:width 640 :height 480})
-;;(def screen-offset {:x 158 :y 315})
-(def screen-offset {:x 10 :y 86})
+(def screen-offset {:x 158 :y 315})
+;;(def screen-offset {:x 10 :y 86})
 
 (def bot (r/create-robot))
 
@@ -14,7 +13,6 @@
 ;;; IItems that are interactable while
 ;;; the game is running
 ;;;
-
 (def start-seq [{:x 312 :y 206}
                 {:x 320 :y 390}
                 {:x 580 :y 455}
@@ -29,6 +27,16 @@
              {:x 494 :y 210}
              {:x 595 :y 210}])
 
+
+;;
+;; The speech bubbles above the customers
+(def seats {:seat-1 {:x 26 :y 62}
+            :seat-2 {:x 127 :y 62}
+            :seat-3 {:x 228 :y 62}
+            :seat-4 {:x 329 :y 62}
+            :seat-5 {:x 410 :y 62}
+            :seat-6 {:x 511 :y 62}})
+                     
 ;;
 ;; Game starts out with ingredients in store
 ;;
@@ -40,7 +48,7 @@
              :unagi 5})
 
 ;;
-;; Recipies for the sushi
+;; Recipies for the sushi7
 ;;
 (def recipies {:caliroll [:rice :nori :roe]
                :onigiri [:rice :rice :nori]
@@ -70,6 +78,9 @@
                          :unagi  {:x 543 :y 227}}
               :delivery {:norm {:x 484 :y 299}
                          :express {:x 575 :y 300}}})
+
+;;
+;; Clients use speech bubbles to 
 
 ;;
 ;; Robot actions are side effect
@@ -136,7 +147,6 @@
                     (offset (get co-ords option))))
                 keywordvect)))
 
-
 (defn order
   [food]
   (if (= food :rice)
@@ -160,14 +170,15 @@
   (remote-control (into [] (map #(offset %) start-seq))))
 
 (defn screen-capture
-  []
+  [x y width height]
   (let [image (r/screen-capture bot
                                 (:x screen-offset)
                                 (:y screen-offset)
                                 640
                                 480)
-        file (clojure.java.io/file 'test.png')]
-    (javax.imageio.ImageIO/write image 'PNG' file)))
+        time (quot (System/currentTimeMillis) 1000)
+        file (clojure.java.io/file (str "test_" time ".png"))]
+    (javax.imageio.ImageIO/write image "png" file)))
 
 (defn get-mouse
   []
