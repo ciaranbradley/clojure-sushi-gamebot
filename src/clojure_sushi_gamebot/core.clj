@@ -27,16 +27,16 @@
              {:x 494 :y 210}
              {:x 595 :y 210}])
 
-
 ;;
 ;; The speech bubbles above the customers
+;;
 (def seats {:seat-1 {:x 26 :y 62}
             :seat-2 {:x 127 :y 62}
             :seat-3 {:x 228 :y 62}
             :seat-4 {:x 329 :y 62}
             :seat-5 {:x 410 :y 62}
             :seat-6 {:x 511 :y 62}})
-                     
+
 ;;
 ;; Game starts out with ingredients in store
 ;;
@@ -80,7 +80,7 @@
                          :express {:x 575 :y 300}}})
 
 ;;
-;; Clients use speech bubbles to 
+;; Clients use speech bubbles to
 
 ;;
 ;; Robot actions are side effect
